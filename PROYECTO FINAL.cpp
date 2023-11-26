@@ -125,7 +125,7 @@ int main(){
 	    		cout<<endl;
 	    		system("cls");
 	    		system("color 3F");
-	    		break;
+    			break;
 	    	case 2:
 	    		system ("color 70");
 	    		system ("cls");
@@ -137,24 +137,38 @@ int main(){
 	    		system("color 3F");
 	    		break;
 	    	case 3:
-	    		system ("color 70");
-	    		system ("cls");
-	    		cout<<"\t\t¡¡Añadir existencia a un producto!! \n";
-	    		addExist( articulos, contador); //Se invoca la función
-	    		cout<<endl;
-	    		system("pause");
-	    		system("cls");
-	    		system("color 3F");
-	    		break;
+	    		do{
+		    		system ("color 70");
+		    		system ("cls");
+		    		cout<<"\t\t¡¡Añadir existencia a un producto!! \n";
+		    		addExist( articulos, contador); //Se invoca la función
+		    		cout<<endl;
+		    		system("pause");
+		    		system("cls");
+		    		system("color 3F");
+		    		int continuar = obtenerEnteroValido("¿Desea agregar existencias para otro producto? (cualquier número para sí, 0 para no): ");
+			        system("cls");
+			        if (continuar == 0) {
+			            break;
+			        }
+        	    } while (true);
+    			break;
 	    	case 4:
-	    		system ("color 70");
-	    		system ("cls");
-	    		cout<<"\t\t!!Registrar una nueva venta!! \n";
-				contador2 = nuevaVenta( articulos, contador, moremo, contador2);
-	    		cout<<endl;
-	    		system("pause");
-	    		system("cls");
-	    		system("color 3F");
+	    		do{
+		    		system ("color 70");
+		    		system ("cls");
+		    		cout<<"\t\t!!Registrar una nueva venta!! \n";
+					contador2 = nuevaVenta( articulos, contador, moremo, contador2);
+		    		cout<<endl;
+		    		system("pause");
+		    		system("cls");
+		    		system("color 3F");
+		    		int continuar = obtenerEnteroValido("¿Desea registrar otra venta? (cualquier número para sí, 0 para no): ");
+			        system("cls");
+			        if (continuar == 0) {
+			            break;
+			        }
+        	    } while (true);
 	    		break;
 	    	case 5:
 	    		system ("color 70");
@@ -167,14 +181,21 @@ int main(){
 	    		system("color 3F");
 	    		break;
 	    	case 6:
-	    		system ("color 70");
-	    		system ("cls");
-	    		cout<<"\t\t!!Registrar una devolución!! \n";
-	    		contador3 = devolver(articulos, contador, moremo, contador2, lessmo, contador3);
-	    		cout<<endl;
-	    		system("pause");
-	    		system("cls");
-	    		system("color 3F");
+	    		do{
+		    		system ("color 70");
+		    		system ("cls");
+		    		cout<<"\t\t!!Registrar una devolución!! \n";
+		    		contador3 = devolver(articulos, contador, moremo, contador2, lessmo, contador3);
+		    		cout<<endl;
+		    		system("pause");
+		    		system("cls");
+		    		system("color 3F");
+		    		int continuar = obtenerEnteroValido("¿Desea registrar otra devolución? (cualquier número para sí, 0 para no): ");
+			        system("cls");
+			        if (continuar == 0) {
+			            break;
+			        }
+        	    } while (true);
 				break;
 	    	case 7:
 	    		system ("color 70");
