@@ -9,7 +9,9 @@ Fecha: 27 de noviembre de 2023
 #include <string>
 #include <sstream> 
 #include <cstdlib> 
+
 using namespace std;
+
 //Struct para registrar los productos
 struct tienda{
 	int Codigo;
@@ -17,6 +19,7 @@ struct tienda{
 	int Valor;
 	int Cantidad;
 };
+
 //Struct para registar las ventas
 struct venta{
 	int Codigo;
@@ -24,17 +27,21 @@ struct venta{
 	int Valor;
 	int Cantidad;	
 };
+
 //Struct para registar los clientes
 struct cliente{
 	
 };
+
 //Struct para registrar las devoluciones
-struct devolu{
-	int Codigo;
-	string Nombre;
-	int Valor;
-	int Cantidad;	
+struct devolu {
+    int CodigoDeVenta;
+    int CodigoDeDevolucion;
+    string Nombre;
+    int Valor;
+    int Cantidad;
 };
+
 //Incluimos funciones que utilizaremos para la ejecucuión del programa
 void unistore();
 bool esEntero(const string& str);
@@ -386,51 +393,56 @@ void printVenta(venta* moremo, int contador2){
 }
 
 //Función para registrar una nueva devolción
-int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devolu* lessmo, int contador3){
-	tienda produ;
-	devolu regreso;
-	venta compra;
-	cout << "Por favor ingrese la información de la devolución: " << endl;
-    compra.Codigo = obtenerEnteroValido("Código de la venta (número): ");
-    while(compra.Codigo <0){
-        compra.Codigo = obtenerEnteroValido("Ingrese un código válido: "); //Se verifican que no ingrese números negativos
-	}
-	//Revisar que el codigo este asociado a un compracto
+int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devolu* lessmo, int contador3) {
+    tienda produ;
+    devolu regreso;
+    venta compra;
+
+    cout << "Por favor ingrese la información de la devolución: " << endl;
+    regreso.CodigoDeVenta = obtenerEnteroValido("Código de la venta (número): ");
+    while (regreso.CodigoDeVenta < 0) {
+        regreso.CodigoDeVenta = obtenerEnteroValido("Ingrese un código válido: ");
+    }
+
+    // Buscar la venta asociada
+    bool ventaEncontrada = false;
     for (int i = 0; i < contador2; i++) {
-		if( moremo[i].Codigo == compra.Codigo){
-			cout << "Se vendieron " << moremo[i].Cantidad << " existencias del artículo de nombre " << moremo[i].Nombre << endl;
-			regreso.Cantidad = obtenerEnteroValido("Ingrese las unidades por regresar: ");
-			while (regreso.Cantidad < 0) {
-        		regreso.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
-    		}
-    		while (moremo[i].Cantidad - regreso.Cantidad < 0) {//Se verifica que no sobrepase la cantidad de unidades del compracto
-        		regreso.Cantidad = obtenerEnteroValido("La cantidad ingresada supera las existencias vendidas.\n Ingrese una cantidad válida: "); 
-    			while (regreso.Cantidad < 0) {
-	        		regreso.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
-	    		}
-			}
+        if (moremo[i].Codigo == regreso.CodigoDeVenta) {
+        	cout << "Se vendieron " << moremo[i].Cantidad << " existencias del artículo de nombre " << moremo[i].Nombre << endl;
+            compra = moremo[i];
+            ventaEncontrada = true;
+            break;
+        }
+    }
 
-			//actualizamos la información del producto vendido
-		    for (int j = 0; j < contador; j++) {
-		        if (articulos[j].Nombre == moremo[i].Nombre) {
-		            articulos[j].Cantidad += regreso.Cantidad; //actualizamos las existencias disponibles
-		        }
-		    }
-			moremo[i].Cantidad -= regreso.Cantidad;
-			regreso.Nombre = moremo[i].Nombre; 
-			regreso.Valor = moremo[i].Valor * regreso.Cantidad;
-			regreso.Codigo = contador3;
+    if (!ventaEncontrada) {
+        cout << "No se encontró la venta asociada al código ingresado." << endl;
+        return contador3;
+    }
 
-			cout << "Se regresaron " << regreso.Cantidad << " unidades de " << regreso.Nombre << endl;
+    // Restaurar las existencias del producto
+    for (int j = 0; j < contador; j++) {
+        if (articulos[j].Nombre == compra.Nombre) {
+            articulos[j].Cantidad += compra.Cantidad;
+        }
+    }
 
-			lessmo[contador3] = regreso;
-    		contador3++;
+    // Registrar la devolución
+    regreso.Cantidad = obtenerEnteroValido("Ingrese las unidades por regresar: ");
+    while (regreso.Cantidad < 0 || regreso.Cantidad > compra.Cantidad) {
+        regreso.Cantidad = obtenerEnteroValido("Ingrese una cantidad válida: ");
+    }
 
-    		return contador3;
-		} 	
-	}
-	cout << "El código ingresado no está asociado a ningún producto." << endl;
-	return contador3;
+    regreso.Nombre = compra.Nombre;
+    regreso.Valor = compra.Valor * regreso.Cantidad;
+    regreso.CodigoDeDevolucion = contador3+1;
+
+    cout << "Se regresaron " << regreso.Cantidad << " unidades de " << regreso.Nombre << endl;
+
+    lessmo[contador3] = regreso;
+    contador3++;
+
+    return contador3;
 }
 
 
@@ -442,7 +454,7 @@ void printDevo(devolu* lessmo, int contador3){
 	    cout << "Se han realizado las siguientes devoluciones:\n";
 	    for (int i = 0; i < contador3; i++) {
 	    	cout<< endl;
-	        cout << "\tCódigo: " << lessmo[i].Codigo << endl << "\tNombre: " << lessmo[i].Nombre << endl << "\tValor unitario: " << lessmo[i].Valor << endl << "\tExistencias: " << lessmo[i].Cantidad<< endl; //Se imprimen los productos en pantalla
+	        cout << "\tCódigo de devolución: " << lessmo[i].CodigoDeDevolucion << endl << "\tNombre: " << lessmo[i].Nombre << endl << "\tValor: " << lessmo[i].Valor << endl << "\tExistencias: " << lessmo[i].Cantidad<< endl; //Se imprimen los productos en pantalla
 	    	cout<< endl;
 		}
 	}
