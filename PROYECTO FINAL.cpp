@@ -50,7 +50,10 @@ int nuevaVenta(tienda* articulos, int contador, venta* moremo, int contador2);
 void printVenta(venta* moremo, int contador2);
 
 //Funciones para las devoluciones
+int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devolu* lessmo, int contador3);
 void printDevo(devolu* lessmo, int contador3);
+
+
 // <<------------------------------ Inicio del programa ----------------------------------->> 
 int main(){
 	//Esta orden permite los caracteres especiales
@@ -69,7 +72,9 @@ int main(){
 	venta* moremo = new venta[200]; //moremo = more money = mas dinero
 	//Creamos un arreglo para las devoluciones de la tienda
 	devolu* lessmo = new devolu[100]; //lessmo = less money = menos dinero
-    int contador, contador2, contador3 = 0;
+    int contador = 0;
+    int contador2 = 0;
+    int contador3 = 0;
 	//Se ejecuta el menú principal que vera el usuario en pantalla 
 	system("color 3F");
 	cout<<"\t\t         **********************************************************************         \n";
@@ -145,8 +150,7 @@ int main(){
 	    		system ("color 70");
 	    		system ("cls");
 	    		cout<<"\t\t!!Registrar una nueva venta!! \n";
-
-	    		nuevaVenta( articulos, contador, moremo, contador2);
+				contador2 = nuevaVenta( articulos, contador, moremo, contador2);
 	    		cout<<endl;
 	    		system("pause");
 	    		system("cls");
@@ -166,7 +170,7 @@ int main(){
 	    		system ("color 70");
 	    		system ("cls");
 	    		cout<<"\t\t!!Registrar una devolución!! \n";
-	    		
+	    		contador3 = devolver(articulos, contador, moremo, contador2, lessmo, contador3);
 	    		cout<<endl;
 	    		system("pause");
 	    		system("cls");
@@ -330,7 +334,7 @@ int nuevaVenta(tienda* articulos, int contador, venta* moremo, int contador2){
 			articulos[i].Cantidad -= compra.Cantidad;
 			compra.Nombre = articulos[i].Nombre; 
 			compra.Valor = articulos[i].Valor * compra.Cantidad;
-			compra.Codigo = contador2;
+			compra.Codigo = contador2 + 1;
 
 			cout << "Se vendieron " << compra.Cantidad << " unidades de " << compra.Nombre << ", por un valor de " << compra.Valor << endl;
 
@@ -346,25 +350,75 @@ int nuevaVenta(tienda* articulos, int contador, venta* moremo, int contador2){
 
 //Funcion para imprimir en pantalla el total de ventas realizadas
 void printVenta(venta* moremo, int contador2){
-	if(contador2 == 0){
-		cout<<"No se han realizado ventas."<< endl;
-	}else{
-	    cout << "Se han realizado las siguientes ventas:\n";
-	    for (int i = 0; i < contador2; i++) {
-	    	cout<< endl;
-	        cout << "\tCódigo: " << moremo[i].Codigo << endl << "\tNombre: " << moremo[i].Nombre << endl << "\tValor unitario: " << moremo[i].Valor << endl << "\tExistencias: " << moremo[i].Cantidad<< endl; //Se imprimen los productos en pantalla
-	    	cout<< endl;
-		}
-	}
+    if(contador2 == 0){
+        cout << "No se han realizado ventas." << endl;
+    } else {
+        cout << "Se han realizado las siguientes ventas:\n";
+        for (int i = 0; i < contador2; i++) {
+            cout << "\tNúmero de venta: " << moremo[i].Codigo << endl;
+            cout << "\tNombre del producto: " << moremo[i].Nombre << endl;
+            cout << "\tValor total de la venta: " << moremo[i].Valor << endl;
+            cout << "\tCantidad vendida: " << moremo[i].Cantidad << endl;
+            cout << endl;
+        }
+    }
 }
+
 //Función para registrar una nueva devolción
+int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devolu* lessmo, int contador3){
+	tienda produ;
+	devolu regreso;
+	venta compra;
+	cout << "Por favor ingrese la información de la devolución: " << endl;
+    compra.Codigo = obtenerEnteroValido("Código de la venta (número): ");
+    while(compra.Codigo <0){
+        compra.Codigo = obtenerEnteroValido("Ingrese un código válido: "); //Se verifican que no ingrese números negativos
+	}
+	//Revisar que el codigo este asociado a un compracto
+    for (int i = 0; i < contador2; i++) {
+		if( moremo[i].Codigo == compra.Codigo){
+			cout << "Se vendieron " << moremo[i].Cantidad << " existencias del artículo de nombre " << moremo[i].Nombre << endl;
+			regreso.Cantidad = obtenerEnteroValido("Ingrese las unidades por regresar: ");
+			while (regreso.Cantidad < 0) {
+        		regreso.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
+    		}
+    		while (moremo[i].Cantidad - regreso.Cantidad < 0) {//Se verifica que no sobrepase la cantidad de unidades del compracto
+        		regreso.Cantidad = obtenerEnteroValido("La cantidad ingresada supera las existencias vendidas.\n Ingrese una cantidad válida: "); 
+    			while (regreso.Cantidad < 0) {
+	        		regreso.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
+	    		}
+			}
+
+			//actualizamos la información del producto vendido
+		    for (int j = 0; j < contador; j++) {
+		        if (articulos[j].Nombre == moremo[i].Nombre) {
+		            articulos[j].Cantidad += regreso.Cantidad; //actualizamos las existencias disponibles
+		        }
+		    }
+			moremo[i].Cantidad -= regreso.Cantidad;
+			regreso.Nombre = moremo[i].Nombre; 
+			regreso.Valor = moremo[i].Valor * regreso.Cantidad;
+			regreso.Codigo = contador3;
+
+			cout << "Se regresaron " << regreso.Cantidad << " unidades de " << regreso.Nombre << endl;
+
+			lessmo[contador3] = regreso;
+    		contador3++;
+
+    		return contador3;
+		} 	
+	}
+	cout << "El código ingresado no está asociado a ningún producto." << endl;
+	return contador3;
+}
+
 
 //Función para imprimir en pantalla el total de devoluciones realizadas
 void printDevo(devolu* lessmo, int contador3){
 	if(contador3 == 0){
 		cout<<"No hay devoluciones registradas."<< endl;
 	}else{
-	    cout << "Se han realizado las siguientes ventas:\n";
+	    cout << "Se han realizado las siguientes devoluciones:\n";
 	    for (int i = 0; i < contador3; i++) {
 	    	cout<< endl;
 	        cout << "\tCódigo: " << lessmo[i].Codigo << endl << "\tNombre: " << lessmo[i].Nombre << endl << "\tValor unitario: " << lessmo[i].Valor << endl << "\tExistencias: " << lessmo[i].Cantidad<< endl; //Se imprimen los productos en pantalla
