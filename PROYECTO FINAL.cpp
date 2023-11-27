@@ -3,7 +3,7 @@ Programa: Proyecto final - Sistema de gestión de inventario y ventas
 Autores: Andrés Felipe Rondón Lara - Andres Felipe Perez Motta - Andres Felipe Tovar Molina
 Fecha: 27 de noviembre de 2023
 */
-//Declaramos variables
+// Declaramos variables
 #include <iostream>
 #include <locale.h>
 #include <string>
@@ -12,7 +12,7 @@ Fecha: 27 de noviembre de 2023
 
 using namespace std;
 
-//Struct para registrar los productos
+// Struct para registrar los productos
 struct tienda{
 	int Codigo;
 	string Nombre;
@@ -20,7 +20,7 @@ struct tienda{
 	int Cantidad;
 };
 
-//Struct para registar las ventas
+// Struct para registar las ventas
 struct venta{
 	int Codigo;
 	string Nombre;
@@ -28,12 +28,15 @@ struct venta{
 	int Cantidad;	
 };
 
-//Struct para registar los clientes
+// Struct para registar los clientes
 struct cliente{
-	
+	int NumIden;
+	string Nom;
+	string Ape;
+	string Correo;
 };
 
-//Struct para registrar las devoluciones
+// Struct para registrar las devoluciones
 struct devolu {
     int CodigoDeVenta;
     int CodigoDeDevolucion;
@@ -42,47 +45,50 @@ struct devolu {
     int Cantidad;
 };
 
-//Incluimos funciones que utilizaremos para la ejecucuión del programa
+// Incluimos funciones que utilizaremos para la ejecucuión del programa
 void unistore();
 bool esEntero(const string& str);
 int obtenerEnteroValido(const string& mensaje);
-//Funciones para los productos
+
+// Funciones para los productos
 int creaProduc(tienda* articulos, int contador);
 void printProduc(tienda* articulos, int contador);
 void addExist(tienda* articulos, int contador);
 
-//Funciones para las ventas
-
+// Funciones para las ventas
 int nuevaVenta(tienda* articulos, int contador, venta* moremo, int contador2);
 void printVenta(venta* moremo, int contador2);
 
-//Funciones para las devoluciones
+// Funciones para las devoluciones
 int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devolu* lessmo, int contador3);
 void printDevo(devolu* lessmo, int contador3);
+
+// Función para los datos del cliente
+int addClien(cliente* people, int contador4);
 
 
 // <<------------------------------ Inicio del programa ----------------------------------->> 
 int main(){
-	//Esta orden permite los caracteres especiales
-	setlocale(LC_ALL, "");
-	system("cls");//Limpia pantalla
-	int n;
-	//Se crea la portada del programa
+	setlocale(LC_ALL, ""); // Esta orden permite los caracteres especiales
+	system("cls");
+	// Se invoca la función de la portada del programa
 	system("color 6");
 	unistore();
 	system ("pause");
 	system("cls");
 	
-	//Creamos un arreglo para los productos de la tienda
+	// Creamos un arreglo para los productos de la tienda
 	tienda* articulos = new tienda[100];
-	//Creamos un arreglo para las ventas de la tienda
+	// Creamos un arreglo para las ventas de la tienda
 	venta* moremo = new venta[200]; //moremo = more money = mas dinero
-	//Creamos un arreglo para las devoluciones de la tienda
+	// Creamos un arreglo para las devoluciones de la tienda
 	devolu* lessmo = new devolu[100]; //lessmo = less money = menos dinero
-    int contador = 0;
+    // Declaramos variables que se usaran en el programa
+	int contador = 0;
     int contador2 = 0;
     int contador3 = 0;
-	//Se ejecuta el menú principal que vera el usuario en pantalla 
+    int contador4 = 0;
+	// Se ejecuta el menú principal que vera el usuario en pantalla 
 	system("color 3F");
 	cout<<"\t\t         **********************************************************************         \n";
 	cout<<"\t\t       **************************************************************************       \n";
@@ -95,7 +101,7 @@ int main(){
 	cout<<"\t\t         **********************************************************************         \n";
     cout<<endl<<endl;
     int menu;
-    //Se ingresa el menú principal
+    // Se ingresa el menú principal
     do{
     	cout<<"\t\t¿Que deseas hacer hoy? \n";
     	cout<<endl;
@@ -116,19 +122,19 @@ int main(){
 		cout<<"\t8. Salir\n"<<endl;
 		menu = obtenerEnteroValido("Por favor, ingresa una opción: ");
 		cout<<endl<<endl;
-		//Se limitan las respuestas del usuario
+		// Se limitan las respuestas del usuario
 	    while (menu<0||menu>8){
 	    	cout<<"La opción que seleccionaste no se encuentra en el menú \n";
 	    	menu = obtenerEnteroValido("Por favor, selecciona una opción válida \n");
 		}
 		cout<<"\t\tSiempre disponible para ayudarte :D\n";
-		//Se ejecutan las distintas opciones que pudo elegir el usuario en el menú principal
+		// Se ejecutan las distintas opciones que pudo elegir el usuario en el menú principal
 		switch(menu){
 	    	case 1:
 	    		system ("color 70");
 	    		system ("cls");
 	    		cout<<"\t\t¡¡Crear producto!! \n"<<endl;
-	    		contador= creaProduc( articulos, contador); //Se invoca la función
+	    		contador= creaProduc( articulos, contador); // Se invoca la función
 	    		cout<<endl;
 	    		system("cls");
 	    		system("color 3F");
@@ -137,7 +143,7 @@ int main(){
 	    		system ("color 70");
 	    		system ("cls");
 	    		cout<<"\t\t¡¡Listar los productos!! \n" <<endl;
-	    		printProduc( articulos, contador); //Se invoca la función
+	    		printProduc( articulos, contador); // Se invoca la función
 	    		cout<<endl;
 	    		system("pause");
 	    		system("cls");
@@ -148,40 +154,44 @@ int main(){
 		    		system ("color 70");
 		    		system ("cls");
 		    		cout<<"\t\t¡¡Añadir existencia a un producto!! \n";
-		    		addExist( articulos, contador); //Se invoca la función
+		    		addExist( articulos, contador); // Se invoca la función
 		    		cout<<endl;
 		    		system("pause");
 		    		system("cls");
-		    		system("color 3F");
-		    		int continuar = obtenerEnteroValido("¿Desea agregar existencias para otro producto? (cualquier número para sí, 0 para no): ");
+		    		system("color 70");
+		    		int continuar = obtenerEnteroValido("\t\t\n\n¿Desea agregar existencias para otro producto? (cualquier número para sí, 0 para no): ");
 			        system("cls");
 			        if (continuar == 0) {
 			            break;
 			        }
         	    } while (true);
+	    		system("cls");
+	    		system("color 3F");
     			break;
 	    	case 4:
 	    		do{
 		    		system ("color 70");
 		    		system ("cls");
 		    		cout<<"\t\t!!Registrar una nueva venta!! \n";
-					contador2 = nuevaVenta( articulos, contador, moremo, contador2);
+					contador2 = nuevaVenta( articulos, contador, moremo, contador2); // Se invoca la función
 		    		cout<<endl;
 		    		system("pause");
 		    		system("cls");
-		    		system("color 3F");
-		    		int continuar = obtenerEnteroValido("¿Desea registrar otra venta? (cualquier número para sí, 0 para no): ");
+		    		system("color 70");
+		    		int continuar = obtenerEnteroValido("\t\t\n\n¿Desea registrar otra venta? (cualquier número para sí, 0 para no): ");
 			        system("cls");
 			        if (continuar == 0) {
 			            break;
 			        }
         	    } while (true);
+	    		system("cls");
+	    		system("color 3F");
 	    		break;
 	    	case 5:
 	    		system ("color 70");
 	    		system ("cls");
 	    		cout<<"\t\t¡¡Registro de ventas!! \n";
-	    		printVenta( moremo, contador2);
+	    		printVenta( moremo, contador2); // Se invoca la función
 	    		cout<<endl;
 	    		system("pause");
 	    		system("cls");
@@ -192,23 +202,25 @@ int main(){
 		    		system ("color 70");
 		    		system ("cls");
 		    		cout<<"\t\t!!Registrar una devolución!! \n";
-		    		contador3 = devolver(articulos, contador, moremo, contador2, lessmo, contador3);
+		    		contador3 = devolver(articulos, contador, moremo, contador2, lessmo, contador3); // Se invoca la función
 		    		cout<<endl;
 		    		system("pause");
 		    		system("cls");
-		    		system("color 3F");
-		    		int continuar = obtenerEnteroValido("¿Desea registrar otra devolución? (cualquier número para sí, 0 para no): ");
+		    		system("color 70");
+		    		int continuar = obtenerEnteroValido("\t\t\n\n¿Desea registrar otra devolución? (cualquier número para sí, 0 para no): ");
 			        system("cls");
 			        if (continuar == 0) {
 			            break;
 			        }
         	    } while (true);
+	    		system("cls");
+	    		system("color 3F");
 				break;
 	    	case 7:
 	    		system ("color 70");
 	    		system ("cls");
 	    		cout<<"\t\t¡¡Registro de devoluciones!! \n";
-	    		printDevo( lessmo, contador3);
+	    		printDevo( lessmo, contador3); // Se invoca la función
 	    		cout<<endl;
 	    		system("pause");
 	    		system("cls");
@@ -218,13 +230,14 @@ int main(){
 	}while (menu!=8);
 	system("cls");
 	system("color 6");
+	// Se imprime en pantalla el final del programa
 	cout<<"\t\t\t\t\t¡¡¡Sigue así, vas por buen camino!!!\n";
 	unistore();
 	cout<<"\t\t\t\tNos vemos en una próxima ocasión, éxitos :D\n"<<endl;
 	system("pause");
 	system("cls");
 	
-	//Se añaden los creditos del programa
+	// Se añaden los creditos del programa
 	cout<<"\t\t\t¡¡¡ Créditos del programa !!!\n"<<endl;
 	cout<<"\tAutores: Andrés Felipe Rondón - Andrés Felipe Perez - Andrés Felipe Tovar\n"<<endl;
 	cout<<"\tIngeniería de sistemas\n"<<endl;
@@ -232,14 +245,17 @@ int main(){
 	system("pause");
 	return 0;
 }
+
+
 //<<-----------------------------------------Se desarrollan las funciones------------------------------------------------------------>>
-//Función que retorna true si el número ingresado es entero	
+
+// Función que retorna true si el número ingresado es entero	
 bool esEntero(const string& str) {
     stringstream ss(str); // Un stringstream se utiliza para operar en cadenas como si fueran flujos de entrada/salida.
     int n;
     return (ss >> n) && ss.eof(); //Esto será verdadero si se pudo extraer un número entero de la cadena str y no hay nada más después del número.
 }
-//Función para validar que la entrada por consola sea entero
+// Función para validar que la entrada por consola sea entero
 int obtenerEnteroValido(const string& mensaje) {
     string entrada;
     while (true) {
@@ -252,19 +268,20 @@ int obtenerEnteroValido(const string& mensaje) {
         }
     }
 }
-//Función que crea un nuevo producto
+
+// Función que crea un nuevo producto
 int creaProduc(tienda* articulos, int contador){
 	while(true){
 		tienda produ;
 		cout << "Por favor ingrese la información del producto: " << endl;
 	    produ.Codigo = obtenerEnteroValido("Código (número): ");
 	    while(produ.Codigo <0){
-	        produ.Codigo = obtenerEnteroValido("Ingrese un código válido: "); //Se verifican que no ingrese números negativos
+	        produ.Codigo = obtenerEnteroValido("Ingrese un código válido: "); // Se verifican que no ingrese números negativos
 		}
 		//Revisar que el codigo ya exista
 	    for (int i = 0; i < contador; i++) {
     		while( articulos[i].Codigo == produ.Codigo){
-		        produ.Codigo = obtenerEnteroValido("El código ya está en uso. Por favor ingrese otro código: "); //Se verifican que no hayan codigos repetidos
+		        produ.Codigo = obtenerEnteroValido("El código ya está en uso. Por favor ingrese otro código: "); // Se verifican que no hayan codigos repetidos
 			}
 		}
 		cin.ignore(); // Limpia el búfer de entrada
@@ -278,16 +295,16 @@ int creaProduc(tienda* articulos, int contador){
 	    produ.Valor = obtenerEnteroValido("Valor unitario: ");
 	    while (produ.Valor < 0) {
 	        cout << "Ingrese un valor unitario válido: ";
-	        produ.Valor = obtenerEnteroValido("Ingrese un valor unitario válido: "); //Se verifican que no ingrese números negativos
+	        produ.Valor = obtenerEnteroValido("Ingrese un valor unitario válido: "); // Se verifican que no ingrese números negativos
 	    }
 		produ.Cantidad = obtenerEnteroValido("Existencias: ");
 	    while (produ.Cantidad < 0) {
-	        produ.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
+	        produ.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); // Se verifican que no ingrese números negativos
 	    }
 	    articulos[contador] = produ;
 	    contador++;
 	    
-	    int continuar = obtenerEnteroValido("¿Desea agregar otro producto? (cualquier número para sí, 0 para no): "); //Se asume un agregar un nuevo producto sin volver al menú
+	    int continuar = obtenerEnteroValido("¿Desea agregar otro producto? (cualquier número para sí, 0 para no): "); // Se asume un agregar un nuevo producto sin volver al menú
 		system("cls");
         if (continuar == 0) {
             break;
@@ -295,7 +312,8 @@ int creaProduc(tienda* articulos, int contador){
 	}
 	return contador;
 }
-//Función que lista los productos ingresados
+
+// Función que lista los productos ingresados
 void printProduc(tienda* articulos, int contador){
 	if(contador == 0){
 		cout<<"No hay productos guardados."<< endl;
@@ -303,12 +321,13 @@ void printProduc(tienda* articulos, int contador){
 	    cout << "Los productos guardados son:\n";
 	    for (int i = 0; i < contador; i++) {
 	    	cout<< endl;
-	        cout << "\tCódigo: " << articulos[i].Codigo << endl << "\tNombre: " << articulos[i].Nombre << endl << "\tValor unitario: " << articulos[i].Valor << endl << "\tExistencias: " << articulos[i].Cantidad<< endl; //Se imprimen los productos en pantalla
+	        cout << "\tCódigo: " << articulos[i].Codigo << endl << "\tNombre: " << articulos[i].Nombre << endl << "\tValor unitario: " << articulos[i].Valor << endl << "\tExistencias: " << articulos[i].Cantidad<< endl; // Se imprimen los productos en pantalla
 	    	cout<< endl;
 		}
 	}
 }
-//Función que añade existencias a productos
+
+// Función que añade existencias a productos
 void addExist(tienda* articulos, int contador) {
     int cod;
     int nuevos;
@@ -322,7 +341,7 @@ void addExist(tienda* articulos, int contador) {
             cout << "El artículo de nombre " << articulos[i].Nombre << " tiene actualmente " << articulos[i].Cantidad << " existencias." << endl;
             nuevos = obtenerEnteroValido("¿Cuantas existencias le gustaría agregar? \n");
             while (nuevos < 0) {
-                cout << "Cantidad incorrecta, solo se admiten valores positivos" << endl;
+                cout << "Cantidad incorrecta, solo se admiten valores positivos" << endl; // Se verifican que no ingrese números negativos
                 nuevos = obtenerEnteroValido("¿Cuantas existencias le gustaría agregar?\n");
                 cout << endl;
             }
@@ -334,54 +353,61 @@ void addExist(tienda* articulos, int contador) {
     cout << "El código ingresado no está asociado a ningún producto." << endl;
 }
 
-//Fución para registrar una nueva venta y un posible nuevo cliente
+// Función para registrar una nueva venta y un posible nuevo cliente
 int nuevaVenta(tienda* articulos, int contador, venta* moremo, int contador2){
 	tienda produ;
 	venta compra;
 	cout << "Por favor ingrese la información de la venta: " << endl;
     produ.Codigo = obtenerEnteroValido("Código del producto (número): ");
     while(produ.Codigo <0){
-        produ.Codigo = obtenerEnteroValido("Ingrese un código válido: "); //Se verifican que no ingrese números negativos
+        produ.Codigo = obtenerEnteroValido("Ingrese un código válido: "); // Se verifican que no ingrese números negativos
 	}
 	//Revisar que el codigo este asociado a un producto
     for (int i = 0; i < contador; i++) {
 		if( articulos[i].Codigo == produ.Codigo){
 			cout << "El artículo de nombre " << articulos[i].Nombre << " tiene actualmente " << articulos[i].Cantidad << " existencias." << endl;
-			compra.Cantidad = obtenerEnteroValido("Ingrese las unidades por vender: ");
-			while (compra.Cantidad < 0) {
-        		compra.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
-    		}
-    		while (articulos[i].Cantidad - compra.Cantidad < 0) {//Se verifica que no sobrepase la cantidad de unidades del producto
-        		compra.Cantidad = obtenerEnteroValido("La cantidad ingresada supera las existencias del producto.\n Ingrese una cantidad válida: "); 
-    			while (compra.Cantidad < 0) {
-	        		compra.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
+			if( articulos[i].Cantidad > 0){
+				compra.Cantidad = obtenerEnteroValido("Ingrese las unidades por vender: ");
+				while (compra.Cantidad < 0) {
+	        		compra.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); // Se verifican que no ingrese números negativos
 	    		}
+	    		while (articulos[i].Cantidad - compra.Cantidad < 0) { // Se verifica que no sobrepase la cantidad de unidades del producto
+	        		compra.Cantidad = obtenerEnteroValido("La cantidad ingresada supera las existencias del producto.\n Ingrese una cantidad válida: "); 
+	    			while (compra.Cantidad < 0) {
+		        		compra.Cantidad = obtenerEnteroValido("Ingrese una catidad de existencias válida: "); //Se verifican que no ingrese números negativos
+		    		}
+				}
+	
+				// Actualizamos la información del producto vendido
+				articulos[i].Cantidad -= compra.Cantidad;
+				compra.Nombre = articulos[i].Nombre; 
+				compra.Valor = articulos[i].Valor * compra.Cantidad;
+				compra.Codigo = contador2 + 1;
+	
+				cout << "Se vendieron " << compra.Cantidad << " unidades de " << compra.Nombre << ", por un valor de " << compra.Valor << endl;
+	
+				moremo[contador2] = compra;
+	    		contador2++;
+	
+	    		return contador2;
+	    	}
+	    	else{
+	    		cout << "El artículo actualmente no está disponible para la venta." << endl;
+	    		return contador2;
 			}
-
-			//actualizamos la información del producto vendido
-			articulos[i].Cantidad -= compra.Cantidad;
-			compra.Nombre = articulos[i].Nombre; 
-			compra.Valor = articulos[i].Valor * compra.Cantidad;
-			compra.Codigo = contador2 + 1;
-
-			cout << "Se vendieron " << compra.Cantidad << " unidades de " << compra.Nombre << ", por un valor de " << compra.Valor << endl;
-
-			moremo[contador2] = compra;
-    		contador2++;
-
-    		return contador2;
-		} 	
+		}
+			
 	}
 	cout << "El código ingresado no está asociado a ningún producto." << endl;
 	return contador2;
 }
 
-//Funcion para imprimir en pantalla el total de ventas realizadas
+// Función para imprimir en pantalla el total de ventas realizadas
 void printVenta(venta* moremo, int contador2){
     if(contador2 == 0){
-        cout << "No se han realizado ventas." << endl;
+        cout << "No se han realizado ventas." << endl; // Se verifica si la cantidad de ventas es 0
     } else {
-        cout << "Se han realizado las siguientes ventas:\n";
+        cout << "Se han realizado las siguientes ventas:\n"; // Se imprime en pantalla los datos de todas las ventas
         for (int i = 0; i < contador2; i++) {
             cout << "\tNúmero de venta: " << moremo[i].Codigo << endl;
             cout << "\tNombre del producto: " << moremo[i].Nombre << endl;
@@ -392,7 +418,7 @@ void printVenta(venta* moremo, int contador2){
     }
 }
 
-//Función para registrar una nueva devolción
+// Función para registrar una nueva devolución
 int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devolu* lessmo, int contador3) {
     tienda produ;
     devolu regreso;
@@ -408,7 +434,7 @@ int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devo
     bool ventaEncontrada = false;
     for (int i = 0; i < contador2; i++) {
         if (moremo[i].Codigo == regreso.CodigoDeVenta) {
-        	cout << "Se vendieron " << moremo[i].Cantidad << " existencias del artículo de nombre " << moremo[i].Nombre << endl;
+            cout << "Se vendieron " << moremo[i].Cantidad << " existencias del artículo de nombre " << moremo[i].Nombre << endl;
             compra = moremo[i];
             ventaEncontrada = true;
             break;
@@ -420,24 +446,40 @@ int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devo
         return contador3;
     }
 
+    // Calcular la cantidad total devuelta hasta el momento para esta venta
+    int devolucionesPrevias = 0;
+    for (int i = 0; i < contador3; i++) {
+        if (lessmo[i].CodigoDeVenta == regreso.CodigoDeVenta) {
+            devolucionesPrevias += lessmo[i].Cantidad;
+        }
+    }
+
+    int unidadesRestantes = compra.Cantidad - devolucionesPrevias;
+
+    if (unidadesRestantes == 0) {
+        cout << "No se pueden registrar más devoluciones para esta venta. Todas las unidades vendidas ya han sido devueltas." << endl;
+        return contador3;
+    }
+
     // Restaurar las existencias del producto
     for (int j = 0; j < contador; j++) {
         if (articulos[j].Nombre == compra.Nombre) {
-            articulos[j].Cantidad += compra.Cantidad;
+            articulos[j].Cantidad += regreso.Cantidad;
         }
     }
 
     // Registrar la devolución
     regreso.Cantidad = obtenerEnteroValido("Ingrese las unidades por regresar: ");
-    while (regreso.Cantidad < 0 || regreso.Cantidad > compra.Cantidad) {
+    while (regreso.Cantidad < 0 || regreso.Cantidad > compra.Cantidad - devolucionesPrevias) {
         regreso.Cantidad = obtenerEnteroValido("Ingrese una cantidad válida: ");
     }
 
     regreso.Nombre = compra.Nombre;
-    regreso.Valor = compra.Valor * regreso.Cantidad;
-    regreso.CodigoDeDevolucion = contador3+1;
+    regreso.Valor = compra.Valor * static_cast<double>(regreso.Cantidad) / compra.Cantidad;
+    regreso.CodigoDeDevolucion = contador3 + 1;
 
     cout << "Se regresaron " << regreso.Cantidad << " unidades de " << regreso.Nombre << endl;
+    cout << "El valor de la devolución es: " << regreso.Valor << endl;
 
     lessmo[contador3] = regreso;
     contador3++;
@@ -446,7 +488,7 @@ int devolver(tienda* articulos, int contador, venta* moremo, int contador2, devo
 }
 
 
-//Función para imprimir en pantalla el total de devoluciones realizadas
+// Función para imprimir en pantalla el total de devoluciones realizadas
 void printDevo(devolu* lessmo, int contador3){
 	if(contador3 == 0){
 		cout<<"No hay devoluciones registradas."<< endl;
@@ -454,12 +496,53 @@ void printDevo(devolu* lessmo, int contador3){
 	    cout << "Se han realizado las siguientes devoluciones:\n";
 	    for (int i = 0; i < contador3; i++) {
 	    	cout<< endl;
-	        cout << "\tCódigo de devolución: " << lessmo[i].CodigoDeDevolucion << endl << "\tNombre: " << lessmo[i].Nombre << endl << "\tValor: " << lessmo[i].Valor << endl << "\tExistencias: " << lessmo[i].Cantidad<< endl; //Se imprimen los productos en pantalla
+	        cout << "\tCódigo de devolución: " << lessmo[i].CodigoDeDevolucion << endl << "\tNombre: " << lessmo[i].Nombre << endl << "\tValor: " << lessmo[i].Valor << endl << "\tExistencias: " << lessmo[i].Cantidad<< endl; //Se imprimen las devoluciones en pantalla
 	    	cout<< endl;
 		}
 	}
 }
-//Función para la presentación del programa
+
+// Función para registrar un nuevo cliente
+int addClien(cliente* people, int contador4){
+	cliente person;
+	cout<<"Por favor, ingrese la información de la persona"<<endl;
+	person.NumIden=obtenerEnteroValido("Número de identificación (CC o TI): ");
+	while (person.NumIden<0){ // Se verifican que no ingrese números negativos
+		person.NumIden=obtenerEnteroValido("Ingrese un número de identificación válido: ");
+	}
+	// Revisar si el número de identificación ya exista
+	for (int i=0; i<contador4; i++){
+		while (people[i].NumIden==person.NumIden){
+			person.NumIden=obtenerEnteroValido("El número de identificación ya esta registrado. Por favor, ingrese uno nuevo: ");
+		}
+	}
+	cin.ignore(); // Limpia el búfer de entrada
+	cout << "Nombre: ";
+	getline(cin, person.Nom);
+	while (person.Nom.empty()) { //Se verifica que el usuario no deje el espacio en blanco
+            cout << "Debe ingresar un nombre." << endl;
+            cout << "Nombre: ";
+            getline(cin, person.Nom);
+    }
+    cin.ignore(); // Limpia el búfer de entrada
+	cout << "Apellido: ";
+	getline(cin, person.Ape);
+	while (person.Ape.empty()) { //Se verifica que el usuario no deje el espacio en blanco
+            cout << "Debe ingresar un apellido." << endl;
+            cout << "Apellido: ";
+            getline(cin, person.Ape);
+    }
+    cin.ignore(); // Limpia el búfer de entrada
+	cout << "Correo electronico: ";
+	getline(cin, person.Correo);
+	while (person.Correo.empty()) { //Se verifica que el usuario no deje el espacio en blanco
+            cout << "Debe ingresar un correo electronico." << endl;
+            cout << "Correo electronico: ";
+            getline(cin, person.Correo);
+    }
+}
+
+// Función para la presentación del programa
 void unistore(){
 	cout<<endl<<endl;
 	cout<<"\t                            *****************              *****************                                  \n";
